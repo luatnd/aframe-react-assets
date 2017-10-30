@@ -1,17 +1,32 @@
-### What | Why
+### Introduce
 A React component for smart managing your AFrame VR assets. You can declare your assets at your React component.
 
-#####The problem
+If you need an example of Aframe with React, I've made a real demo for Aframe, include implementation of this package.
+Just take a look at https://github.com/luatnd/aframe-react-demo
 
-> Aframe require you too put all your assets inside `<a-assets>` and a direct child of `<a-scene>`
+### The problem why you need to use this package
+
+##### TL;DR
+> `Aframe assets manager system` require you too put all your assets inside _only one_ `<a-assets>` tag in your app AND a <a-assets> must be the direct child of `<a-scene>`.
+But when you break your very big layout into so many nested React components, you need to find a way to put your assets at your components to ensure **_component oriented_** spirit of React while stay being conflict with `Aframe assets manager system`. Using `aframe-react-assets` is a good solution for you. 
+
+You can skip the detail and jump to [How](#how) section if you aren't interested in the detail of problem.
 
 
-**Reality**
+##### Detail of the problem
 
+This is a good HTML section for Aframe, 
+we'll take about migrating the `Sky` section and its relate assets in to React component:
 ```html
 <a-scene>
      <!-- Aframe Asset management system. -->
     <a-assets>
+    
+        <!-- <Sky/> React component's assets: -->
+        <img id="sky" src="assets/img/sky.jpg" alt="Sky Component's asset #sky"/>
+        <video id="videoMilkyWay" src="assets/img/videoMilkyWay.mp4"/>
+
+        <!-- Other Component Assets -->
         <a-asset-item id="horse-obj" src="horse.obj"></a-asset-item>
         <a-asset-item id="horse-mtl" src="horse.mtl"></a-asset-item>
         <a-mixin id="giant" scale="5 5 5"></a-mixin>
@@ -23,7 +38,17 @@ A React component for smart managing your AFrame VR assets. You can declare your
     <a-entity class="camera" camera=""></a-entity>
     
     <Entity>
-        <Sky/>
+    
+        <!-- This will be <Sky/> Component -->
+        <Entity className="theSky">
+            <a-sky className="sky" src="#sky" rotation="0 0 0"/>
+            <!-- ... more content ... -->
+            <!-- ... more content ... -->
+            <!-- ... more content ... -->
+        </Entity>
+        <!--End Sky component-->
+
+
         <Light/>
         <FloorAndWall/>
         
@@ -33,35 +58,66 @@ A React component for smart managing your AFrame VR assets. You can declare your
             <a-entity geometry="primitive: plane" material="src: #kentucky-derby"></a-entity>
             <a-entity mixin="giant" obj-model="obj: #horse-obj; mtl: #horse-mtl"></a-entity>
         </Entity>
-        
+
     </Entity>
 </a-scene>
 ```
 
 So if you create Aframe with React, you need to divide your Aframe HTML into some small component.
 ```html
-<Entity className="advertise">
-    <a-plane src="#advertisement"></a-plane>
-    <a-sound src="#neigh"></a-sound>
-    <a-entity geometry="primitive: plane" material="src: #kentucky-derby"></a-entity>
-    <a-entity mixin="giant" obj-model="obj: #horse-obj; mtl: #horse-mtl"></a-entity>
+<Entity className="theSky">
+    <a-sky className="sky" src="#sky" rotation="0 0 0"/>
+    <!-- ... more content ... -->
+    <!-- ... more content ... -->
+    <!-- ... more content ... -->
 </Entity>
 ``` 
 into this:
 ```html
-<Advertise/>
+<Sky/>
 ```
 
-How can you manage your asset now and avoid violate to [The problem](#the-problem) mentioned above.
-Use this plugin help you put your asset at your component and avoid conflict with [The problem](#the-problem).
+So what about the Sky assets ?
+```html
+<img id="sky" src="assets/img/sky.jpg" alt="Sky Component's asset #sky"/>
+<video id="videoMilkyWay" src="assets/img/videoMilkyWay.mp4"/>
+```
+
+AFrame recommend you to put your assets "**inside**" the <a-assets> 
+_(You might read the TL;DR section again)_
+
+You can **not** do like this:
+
+Sky.jsx:
+```jsx harmony
+<Entity className="theSky">
+    {/* Aframe do not recommend you put your assets here: */}
+    <img id="sky" src="assets/img/sky.jpg" alt="Sky Component's asset #sky"/>
+    <video id="videoMilkyWay" src="assets/img/videoMilkyWay.mp4"/>
+
+    <a-sky className="sky" src="#sky" rotation="0 0 0"/>
+    <!-- ... more content ... -->
+    <!-- ... more content ... -->
+    <!-- ... more content ... -->
+</Entity>
+```
+
+Because:
+1. AFrame assets manager system rules, Read the [TL;DR](#tl-dr)
+2. If your react component was re-render, browser will re-make a new request to load assets _again_. 
+   This is redundant. Imagine your component contain 10 assets, and component will be re-render every second. How bad that will be ?
+3. Use Aframe asset manager system is a most efficient way to use your assets 
+
 
 ### How
-0.. Install plugin
+How to use this plugin
+
+**0.. Install plugin**
 ```shell
-yarn install aframe-react-assets
+yarn add aframe-react-assets
 ```
 
-1.. Declare your `static Assets` array at your component:
+**1.. Declare your `static Assets` array at your component:**
 
 ```jsx harmony
 import imgSky from "assets/img/sky.jpg";
@@ -83,7 +139,8 @@ export default class Sky extends React.Component {
 }
 ```
 
-2.. Create an `rootAssets.js` like this:
+**2.. Create an `rootAssets.js` like this:**
+
 rootAssets.js
 ```jsx harmony
 export default {
@@ -98,7 +155,8 @@ export default {
 };
 ```
 
-3.. Use `Assets`:
+**3.. Use `Assets`:**
+
 MyScene.jsx:
 ```jsx harmony
 import {Entity, Scene} from 'aframe-react';
@@ -152,7 +210,7 @@ export default class MyScene extends React.Component {
  *
  * @default 200
  
-##### debug: PropTypes.bool,
+##### debug: boolean
  * Turn on console.log this component activities
 
 ##### loadingStatusHandle(`status: boolean`): void
