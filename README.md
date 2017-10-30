@@ -15,6 +15,7 @@ You can skip the detail and jump to [How](#how) section if you aren't interested
 
 ##### Detail of the problem
 
+<details>
 This is a good HTML section for Aframe, 
 we'll take about migrating the `Sky` section and its relate assets in to React component:
 ```html
@@ -103,11 +104,12 @@ Sky.jsx:
 ```
 
 Because:
-1. AFrame assets manager system rules, Read the [TL;DR](#tl-dr)
+1. AFrame assets manager system rules, Read the [TL;DR](#tldr)
 2. If your react component was re-render, browser will re-make a new request to load assets _again_. 
    This is redundant. Imagine your component contain 10 assets, and component will be re-render every second. How bad that will be ?
 3. Use Aframe asset manager system is a most efficient way to use your assets 
 
+</details>
 
 ### How
 How to use this plugin
@@ -172,9 +174,9 @@ export default class MyScene extends React.Component {
         timeout={4e4}
         interval={200}
         debug={true}
-        currentInfoHandle={this.updateAssetsCurrentInfo}
-        loadingInfoHandle={this.updateAssetsLoadingInfo}
-        loadingStatusHandle={this.updateAssetsLoadingStatus}
+        onLoad={this.updateAssetsLoadingStatus}
+        onLoadingBySize={this.updateAssetsCurrentInfo}
+        onLoadingByAmount={this.updateAssetsLoadingInfo}
       />
              
       <Entity camera="userHeight: 2; fov: 80;"/>
@@ -201,31 +203,39 @@ export default class MyScene extends React.Component {
 * See `rootAssets.js` above 
 
 ##### timeout: number
-* Stop loading assets and run the app when this value was reached, in milliseconds.
+* Stop loading pending/waiting assets and consider the loading was all successful when this value was reached, in milliseconds.
 * @default 30000
 
 ##### interval: number
- * The interval duration in milliseconds that this component will do update via props *Handle() bellow
- * Example: loadingInfoHandle() will be run each 200ms (default)
+ * The interval duration in milliseconds that this component will do update via `event handle` on*() bellow
+ * Example: onLoadingByAmount() will be triggered each 200ms (default)
  *
  * @default 200
  
 ##### debug: boolean
  * Turn on console.log this component activities
 
-##### loadingStatusHandle(`status: boolean`): void
- * When <a-assets/> was start loading its assets: `loadingStatusHandle(true)` was triggered.
- * When all assets was loaded or exceed `timeout` props: `loadingStatusHandle(false)` was triggered.
+##### onLoad(`status: boolean`): void
+ * When <a-assets/> was start loading its assets: `onLoad(true)` was triggered.
+ * When all assets was loaded or exceed `timeout` props: `onLoad(false)` was triggered.
  
-##### currentInfoHandle(`{assetCurrentLoadedBytes: number, assetTotalBytes: number}`): void
- * currentInfoHandle was triggered each `interval` milliseconds. See `interval` props.
+##### onLoadingBySize(`{assetCurrentLoadedBytes: number, assetTotalBytes: number}`): void
+ * onLoadingBySize was triggered each `interval` milliseconds. See `interval` props.
  * You can calculate current progress by percent: 
     `const currentPercent = assetCurrentLoadedBytes / assetTotalBytes * 100;`
  * NOTE: TODO: This feature has not completed yet;
+ * NOTE: Choose and use only one onLoading*() handle, because they're using same interval manager
 
-##### loadingInfoHandle(`{assetLoaded: number, assetTotal: number, assetCurrentItem: object}`):void
- * loadingInfoHandle was triggered each `interval` milliseconds. See `interval` props.
+##### onLoadingByAmount(`{assetLoaded: number, assetTotal: number, assetCurrentItem: object}`):void
+ * onLoadingByAmount was triggered each `interval` milliseconds. See `interval` props.
  * Update loading info every `interval` milliseconds
     * `assetLoaded`: Number of successfully loaded assets,
     * `assetTotal`: Total amount of all your assets,
     * `assetCurrentItem`: The current loaded assets, value is the html element
+* NOTE: Choose and use only one onLoading*() handle, because they're using same interval manager
+
+
+### Contribution
+You're very welcome. This package is an just quick initial idea, for a production app, this plugin is lacking:
+* Track how many bytes assets was loaded (there was a draft version inside this package)
+* Code splitting support

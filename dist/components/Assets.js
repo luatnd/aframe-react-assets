@@ -14,16 +14,18 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Assets component for managing AFrame assets
+ * See more detail here:
+ * https://www.npmjs.com/package/aframe-react-assets
+ */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
 var defaultTimeout = 30000;
 var defaultInterval = 200;
 
-/**
- * NOTE: <a-assets> must be a child of a <a-scene>.
- * So that I create this component to manage all assets
- */
 var Assets = (_temp2 = _class = function (_React$Component) {
   _inherits(Assets, _React$Component);
 
@@ -60,7 +62,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
           ConsoleLogger.log('Attempt to updateAssetsLoadingInfo', 'Assets');
         }
 
-        _this.props.loadingInfoHandle({
+        _this.props.onLoadingByAmount({
           assetLoaded: _this.current,
           assetTotal: _this.total,
           assetCurrentItem: _this.assetCurrentItem
@@ -75,7 +77,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
 
       if (currentUnix - interval > _this.idleTimestamp) {
         _this.idleTimestamp = currentUnix;
-        _this.props.currentInfoHandle({
+        _this.props.onLoadingBySize({
           assetCurrentLoadedBytes: e.detail.loadedBytes,
           assetCurrentTotalBytes: e.detail.totalBytes ? e.detail.totalBytes : e.detail.loadedBytes
         });
@@ -122,7 +124,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
           'a-entity',
           { key: key, __source: {
               fileName: _jsxFileName,
-              lineNumber: 213
+              lineNumber: 177
             },
             __self: _this2
           },
@@ -175,12 +177,12 @@ var Assets = (_temp2 = _class = function (_React$Component) {
 
       this.assetsInstance.addEventListener('loaded', function () {
         // Force too complete
-        _this3.props.loadingInfoHandle({
+        _this3.props.onLoadingByAmount({
           assetLoaded: _this3.total,
           assetTotal: _this3.total,
           assetCurrentItem: _this3.assetCurrentItem
         });
-        setTimeout(_this3.props.loadingStatusHandle(false), 1000);
+        setTimeout(_this3.props.onLoad(false), 1000);
 
         ConsoleLogger.log('All assets were loaded', 'Assets');
         //console.info('And THREE.Cache', THREE.Cache);
@@ -207,7 +209,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
             return _this4.assetsInstance = ele;
           }, __source: {
             fileName: _jsxFileName,
-            lineNumber: 236
+            lineNumber: 200
           },
           __self: this
         }),
@@ -219,6 +221,11 @@ var Assets = (_temp2 = _class = function (_React$Component) {
     value: function getCurrUnixMili() {
       return new Date().getTime();
     }
+
+    /**
+     * NOTE: TODO: This feature has not completed yet;
+     */
+
 
     /**
      * Try to Attach "loaded" event listener foreach asset items.
@@ -235,55 +242,13 @@ var Assets = (_temp2 = _class = function (_React$Component) {
 
   return Assets;
 }(React.Component), _class.propTypes = {
-  /**
-   * Asset list
-   */
   assets: PropTypes.object,
-
-  /**
-   * Stop loading assets and run the app when this value was reached, in milliseconds.
-   * @default 30000
-   */
   timeout: PropTypes.number,
-
-  /**
-   * The interval duration in milliseconds that this component will do update via props *Handle() bellow
-   * Example: loadingInfoHandle() will be run each 200ms (default)
-   *
-   * @default 200
-   */
   interval: PropTypes.number,
-
-  /**
-   * Turn on console.log this component activities
-   */
   debug: PropTypes.bool,
-
-  /**
-   * loadingStatusHandle(status:boolean): A event handle callback: Was called with
-   *    status=true when <assets/> was start loading,
-   *    status=false when all assets was loaded
-   */
-  loadingStatusHandle: PropTypes.func,
-
-  /**
-   * currentInfoHandle({assetCurrentLoadedBytes, assetTotalBytes})
-   * assetCurrentLoadedBytes
-   * assetTotalBytes
-   * You can calculate current progress by percent: const currentPercent = assetCurrentLoadedBytes / assetTotalBytes * 100;
-   *
-   * NOTE: TODO: This feature has not completed yet;
-   */
-  currentInfoHandle: PropTypes.func,
-
-  /**
-   * loadingInfoHandle({assetLoaded, assetTotal, assetCurrentItem})
-   * Update loading info every `interval` milliseconds
-   *  assetLoaded: Number of successfully loaded assets,
-   *  assetTotal: Total amount of all your assets,
-   *  assetCurrentItem: The current loaded assets, value is the html element
-   */
-  loadingInfoHandle: PropTypes.func
+  onLoad: PropTypes.func,
+  onLoadingBySize: PropTypes.func,
+  onLoadingByAmount: PropTypes.func
 }, _temp2);
 export { Assets as default };
 
