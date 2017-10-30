@@ -1,3 +1,5 @@
+[![npm](https://badge.fury.io/js/aframe-react-assets.svg)](https://www.npmjs.com/package/aframe-react-assets)
+
 ### Introduce
 A React component for smart managing your AFrame VR assets. You can declare your assets at your React component.
 
