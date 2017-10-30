@@ -16,8 +16,10 @@ You can skip the detail and jump to [How](#how) section if you aren't interested
 ##### Detail of the problem
 
 <details>
+
 This is a good HTML section for Aframe, 
 we'll take about migrating the `Sky` section and its relate assets in to React component:
+
 ```html
 <a-scene>
      <!-- Aframe Asset management system. -->
@@ -65,6 +67,7 @@ we'll take about migrating the `Sky` section and its relate assets in to React c
 ```
 
 So if you create Aframe with React, you need to divide your Aframe HTML into some small component.
+
 ```html
 <Entity className="theSky">
     <a-sky className="sky" src="#sky" rotation="0 0 0"/>
@@ -216,7 +219,7 @@ export default class MyScene extends React.Component {
  * Turn on console.log this component activities
 
 ##### onLoad(`status: boolean`): void
- * When <a-assets/> was start loading its assets: `onLoad(true)` was triggered.
+ * When `<a-assets/>` was start loading its assets: `onLoad(true)` was triggered.
  * When all assets was loaded or exceed `timeout` props: `onLoad(false)` was triggered.
  
 ##### onLoadingBySize(`{assetCurrentLoadedBytes: number, assetTotalBytes: number}`): void
