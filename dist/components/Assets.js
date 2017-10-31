@@ -1,10 +1,29 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class,
-    _temp2,
-    _jsxFileName = 'src/components/Assets.jsx';
+var _class, _temp2; /**
+                     * Assets component for managing AFrame assets
+                     * See more detail here:
+                     * https://www.npmjs.com/package/aframe-react-assets
+                     */
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -14,15 +33,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/**
- * Assets component for managing AFrame assets
- * See more detail here:
- * https://www.npmjs.com/package/aframe-react-assets
- */
-
-import React from 'react';
-import PropTypes from 'prop-types';
-
 var defaultTimeout = 30000;
 var defaultInterval = 200;
 
@@ -30,8 +40,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
   _inherits(Assets, _React$Component);
 
   function Assets() {
-    var _ref,
-        _this2 = this;
+    var _ref;
 
     var _temp, _this, _ret;
 
@@ -120,16 +129,11 @@ var Assets = (_temp2 = _class = function (_React$Component) {
         var componentAssets = _this.props.assets[key];
         _this.total += componentAssets.length;
 
-        return React.createElement(
+        return _react2.default.createElement(
           'a-entity',
-          { key: key, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 177
-            },
-            __self: _this2
-          },
+          { key: key },
           componentAssets.map(function (item) {
-            return React.cloneElement(item, _extends({
+            return _react2.default.cloneElement(item, _extends({
               key: item.props.id ? item.props.id : ConsoleLogger.getUnix()
             }, _this.getBindingProps(item)) // Bind event listener for this elements
             );
@@ -154,7 +158,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this3 = this;
+      var _this2 = this;
 
       ConsoleLogger.log('Assets Component mounted', 'Assets');
       //console.log('assetsInstance.fileLoader: ', this.assetsInstance.fileLoader);
@@ -177,12 +181,12 @@ var Assets = (_temp2 = _class = function (_React$Component) {
 
       this.assetsInstance.addEventListener('loaded', function () {
         // Force too complete
-        _this3.props.onLoadingByAmount({
-          assetLoaded: _this3.total,
-          assetTotal: _this3.total,
-          assetCurrentItem: _this3.assetCurrentItem
+        _this2.props.onLoadingByAmount({
+          assetLoaded: _this2.total,
+          assetTotal: _this2.total,
+          assetCurrentItem: _this2.assetCurrentItem
         });
-        setTimeout(_this3.props.onLoad(false), 1000);
+        setTimeout(_this2.props.onLoad(false), 1000);
 
         ConsoleLogger.log('All assets were loaded', 'Assets');
         //console.info('And THREE.Cache', THREE.Cache);
@@ -197,22 +201,17 @@ var Assets = (_temp2 = _class = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this3 = this;
 
       var _props$timeout = this.props.timeout,
           timeout = _props$timeout === undefined ? defaultTimeout : _props$timeout;
 
 
-      return React.createElement(
+      return _react2.default.createElement(
         'a-assets',
         Object.assign({ timeout: timeout }, { ref: function ref(ele) {
-            return _this4.assetsInstance = ele;
-          }, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 200
-          },
-          __self: this
-        }),
+            return _this3.assetsInstance = ele;
+          } }),
         this.getAssetsList()
       );
     }
@@ -241,16 +240,16 @@ var Assets = (_temp2 = _class = function (_React$Component) {
   }]);
 
   return Assets;
-}(React.Component), _class.propTypes = {
-  assets: PropTypes.object,
-  timeout: PropTypes.number,
-  interval: PropTypes.number,
-  debug: PropTypes.bool,
-  onLoad: PropTypes.func,
-  onLoadingBySize: PropTypes.func,
-  onLoadingByAmount: PropTypes.func
+}(_react2.default.Component), _class.propTypes = {
+  assets: _propTypes2.default.object,
+  timeout: _propTypes2.default.number,
+  interval: _propTypes2.default.number,
+  debug: _propTypes2.default.bool,
+  onLoad: _propTypes2.default.func,
+  onLoadingBySize: _propTypes2.default.func,
+  onLoadingByAmount: _propTypes2.default.func
 }, _temp2);
-export { Assets as default };
+exports.default = Assets;
 
 var ConsoleLogger = function () {
   function ConsoleLogger() {
