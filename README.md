@@ -243,4 +243,4 @@ export default class MyScene extends React.Component {
 ### Contribution
 You're very welcome. This package is an just quick initial idea, for a production app, this plugin is lacking:
 * Track how many bytes assets was loaded (there was a draft version inside this package)
-* Code splitting support
+* Code splitting support (It's might buggy when this component re-render)
