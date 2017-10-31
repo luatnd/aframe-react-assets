@@ -1,6 +1,6 @@
 {
   "name": "aframe-react-assets",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A React component for smart managing your AFrame VR assets. You can declare your assets at your React component.",
   "author": "Luat Nguyen",
   "license": "MIT",

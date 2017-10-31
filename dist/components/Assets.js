@@ -9,11 +9,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _temp2; /**
-                     * Assets component for managing AFrame assets
-                     * See more detail here:
-                     * https://www.npmjs.com/package/aframe-react-assets
-                     */
+var _class,
+    _temp2,
+    _jsxFileName = 'src/components/Assets.jsx'; /**
+                                                 * Assets component for managing AFrame assets
+                                                 * See more detail here:
+                                                 * https://www.npmjs.com/package/aframe-react-assets
+                                                 */
 
 var _react = require('react');
 
@@ -36,11 +38,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var defaultTimeout = 30000;
 var defaultInterval = 200;
 
-var Assets = (_temp2 = _class = function (_React$Component) {
-  _inherits(Assets, _React$Component);
+var Assets = (_temp2 = _class = function (_React$PureComponent) {
+  _inherits(Assets, _React$PureComponent);
 
   function Assets() {
-    var _ref;
+    var _ref,
+        _this2 = this;
 
     var _temp, _this, _ret;
 
@@ -50,11 +53,17 @@ var Assets = (_temp2 = _class = function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Assets.__proto__ || Object.getPrototypeOf(Assets)).call.apply(_ref, [this].concat(args))), _this), _this.assetsInstance = null, _this.total = 0, _this.current = 0, _this.idleTimestamp = 0, _this.countLoadedAssetItem = function (e) {
-      //console.log('countLoadedAssetItem this.current: ', this.current, e, e.target);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Assets.__proto__ || Object.getPrototypeOf(Assets)).call.apply(_ref, [this].concat(args))), _this), _this.iState = {
+      assetsInstance: null,
+      current: 0,
+      total: 0,
+      assetCurrentItem: null,
+      idleTimestamp: 0
+    }, _this.countLoadedAssetItem = function (e) {
+      //console.log('countLoadedAssetItem this.iState.current: ', this.iState.current, e, e.target);
 
-      _this.current++;
-      _this.assetCurrentItem = e.target;
+      _this.iState.current++;
+      _this.iState.assetCurrentItem = e.target;
 
       if (_this.props.debug && e.target) {
         console.info('[Assets] loaded: ', e.target);
@@ -64,17 +73,17 @@ var Assets = (_temp2 = _class = function (_React$Component) {
       var _this$props$interval = _this.props.interval,
           interval = _this$props$interval === undefined ? defaultInterval : _this$props$interval;
 
-      if (currentUnix - interval > _this.idleTimestamp) {
-        _this.idleTimestamp = currentUnix;
+      if (currentUnix - interval > _this.iState.idleTimestamp) {
+        _this.iState.idleTimestamp = currentUnix;
 
         if (_this.props.debug) {
           ConsoleLogger.log('Attempt to updateAssetsLoadingInfo', 'Assets');
         }
 
         _this.props.onLoadingByAmount({
-          assetLoaded: _this.current,
-          assetTotal: _this.total,
-          assetCurrentItem: _this.assetCurrentItem
+          assetLoaded: _this.iState.current,
+          assetTotal: _this.iState.total,
+          assetCurrentItem: _this.iState.assetCurrentItem
         });
       }
     }, _this.updateProgress = function (e) {
@@ -84,8 +93,8 @@ var Assets = (_temp2 = _class = function (_React$Component) {
       var _this$props$interval2 = _this.props.interval,
           interval = _this$props$interval2 === undefined ? defaultInterval : _this$props$interval2;
 
-      if (currentUnix - interval > _this.idleTimestamp) {
-        _this.idleTimestamp = currentUnix;
+      if (currentUnix - interval > _this.iState.idleTimestamp) {
+        _this.iState.idleTimestamp = currentUnix;
         _this.props.onLoadingBySize({
           assetCurrentLoadedBytes: e.detail.loadedBytes,
           assetCurrentTotalBytes: e.detail.totalBytes ? e.detail.totalBytes : e.detail.loadedBytes
@@ -127,17 +136,23 @@ var Assets = (_temp2 = _class = function (_React$Component) {
 
       var assetItemComponents = Object.keys(assets).map(function (key) {
         var componentAssets = _this.props.assets[key];
-        _this.total += componentAssets.length;
+        _this.iState.total += componentAssets.length;
 
         return _react2.default.createElement(
           'a-entity',
-          { key: key },
+          { key: key, className: key, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 175
+            },
+            __self: _this2
+          },
           componentAssets.map(function (item) {
-            return _react2.default.cloneElement(item, _extends({
+            return item.hasOwnProperty('type') ? _react2.default.cloneElement(item, _extends({
               key: item.props.id ? item.props.id : ConsoleLogger.getUnix()
             }, _this.getBindingProps(item)) // Bind event listener for this elements
-            );
-          })
+            ) : null;
+          } // Some user mis-type comment: [ {/*Asset was commented*/} ] ==> [ {} ] , so this is not valid assets
+          )
         );
       });
 
@@ -149,21 +164,18 @@ var Assets = (_temp2 = _class = function (_React$Component) {
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
+  // Internal state that does not cause re-render.
+
+
   _createClass(Assets, [{
-    key: 'shouldComponentUpdate',
-    value: function shouldComponentUpdate() {
-      // Because we bind event to element so that do not re-render this component
-      return false;
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       ConsoleLogger.log('Assets Component mounted', 'Assets');
-      //console.log('assetsInstance.fileLoader: ', this.assetsInstance.fileLoader);
-      //if (this.assetsInstance.fileLoader) {
-      //  const mng = this.assetsInstance.fileLoader.manager;
+      //console.log('iState.assetsInstance.fileLoader: ', this.iState.assetsInstance.fileLoader);
+      //if (this.iState.assetsInstance.fileLoader) {
+      //  const mng = this.iState.assetsInstance.fileLoader.manager;
       //
       //  mng.onError = function (a, b) {
       //    console.log("mng onError a, b: ", a, b);
@@ -179,14 +191,14 @@ var Assets = (_temp2 = _class = function (_React$Component) {
       //  }
       //}
 
-      this.assetsInstance.addEventListener('loaded', function () {
+      this.iState.assetsInstance.addEventListener('loaded', function () {
         // Force too complete
-        _this2.props.onLoadingByAmount({
-          assetLoaded: _this2.total,
-          assetTotal: _this2.total,
-          assetCurrentItem: _this2.assetCurrentItem
+        _this3.props.onLoadingByAmount({
+          assetLoaded: _this3.iState.total,
+          assetTotal: _this3.iState.total,
+          assetCurrentItem: _this3.iState.assetCurrentItem
         });
-        setTimeout(_this2.props.onLoad(false), 1000);
+        setTimeout(_this3.props.onLoad(false), 1000);
 
         ConsoleLogger.log('All assets were loaded', 'Assets');
         //console.info('And THREE.Cache', THREE.Cache);
@@ -196,12 +208,12 @@ var Assets = (_temp2 = _class = function (_React$Component) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       // Make sure to remove the DOM listener when the component is unmounted.
-      //this.nv.removeEventListener("nv-enter", this.handleNvEnter);
+      this.iState.assetsInstance.removeEventListener('loaded');
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var _props$timeout = this.props.timeout,
           timeout = _props$timeout === undefined ? defaultTimeout : _props$timeout;
@@ -210,8 +222,13 @@ var Assets = (_temp2 = _class = function (_React$Component) {
       return _react2.default.createElement(
         'a-assets',
         Object.assign({ timeout: timeout }, { ref: function ref(ele) {
-            return _this3.assetsInstance = ele;
-          } }),
+            return _this4.iState.assetsInstance = ele;
+          }, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 199
+          },
+          __self: this
+        }),
         this.getAssetsList()
       );
     }
@@ -240,7 +257,7 @@ var Assets = (_temp2 = _class = function (_React$Component) {
   }]);
 
   return Assets;
-}(_react2.default.Component), _class.propTypes = {
+}(_react2.default.PureComponent), _class.propTypes = {
   assets: _propTypes2.default.object,
   timeout: _propTypes2.default.number,
   interval: _propTypes2.default.number,
