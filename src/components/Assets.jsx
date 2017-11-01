@@ -123,6 +123,10 @@ export default class Assets extends React.PureComponent {
   /**
    * Try to Attach "loaded" event listener foreach asset items.
    * "loaded" event name was different from each item
+   * For more detail, see here:
+   * https://aframe.io/docs/0.6.0/core/asset-management-system.html
+   *
+   * This function is not complete event handle as Aframe docs. I'm going to add some missing event handle in the future
    *
    * @param item React element, eg: <img src=""/>
    * @returns {*}
@@ -133,7 +137,7 @@ export default class Assets extends React.PureComponent {
     
     switch (item.type) {
       case 'a-asset-item':
-        eventName = 'loaded'; // aframe / threejs event
+        eventName = 'loaded'; // aframe / threejs event // TODO: How about the failed event ?
         return {
           // NOTE: This case is an react component, not a pure HTML so that we need to pass eventListener to `ref`
           ref: ele => {
@@ -143,9 +147,10 @@ export default class Assets extends React.PureComponent {
         };
       
       case 'img':
-        eventName = 'onLoad'; // js event
         return {
-          [eventName]: this.countLoadedAssetItem,
+          // js event
+          'onLoad': this.countLoadedAssetItem,
+          'onError': this.countLoadedAssetItem,
           //ref: ele => this.assetItemInstances[getId(item)] = ele,
         };
       

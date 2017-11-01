@@ -106,7 +106,7 @@ var Assets = (_temp2 = _class = function (_React$PureComponent) {
 
       switch (item.type) {
         case 'a-asset-item':
-          eventName = 'loaded'; // aframe / threejs event
+          eventName = 'loaded'; // aframe / threejs event // TODO: How about the failed event ?
           return {
             // NOTE: This case is an react component, not a pure HTML so that we need to pass eventListener to `ref`
             ref: function ref(ele) {
@@ -116,8 +116,12 @@ var Assets = (_temp2 = _class = function (_React$PureComponent) {
           };
 
         case 'img':
-          eventName = 'onLoad'; // js event
-          return _defineProperty({}, eventName, _this.countLoadedAssetItem);
+          return {
+            // js event
+            'onLoad': _this.countLoadedAssetItem,
+            'onError': _this.countLoadedAssetItem
+            //ref: ele => this.assetItemInstances[getId(item)] = ele,
+          };
 
         case 'audio':
         case 'video':
@@ -142,7 +146,7 @@ var Assets = (_temp2 = _class = function (_React$PureComponent) {
           'a-entity',
           { key: key, className: key, __source: {
               fileName: _jsxFileName,
-              lineNumber: 175
+              lineNumber: 180
             },
             __self: _this2
           },
@@ -225,7 +229,7 @@ var Assets = (_temp2 = _class = function (_React$PureComponent) {
             return _this4.iState.assetsInstance = ele;
           }, __source: {
             fileName: _jsxFileName,
-            lineNumber: 199
+            lineNumber: 204
           },
           __self: this
         }),
@@ -246,6 +250,10 @@ var Assets = (_temp2 = _class = function (_React$PureComponent) {
     /**
      * Try to Attach "loaded" event listener foreach asset items.
      * "loaded" event name was different from each item
+     * For more detail, see here:
+     * https://aframe.io/docs/0.6.0/core/asset-management-system.html
+     *
+     * This function is not complete event handle as Aframe docs. I'm going to add some missing event handle in the future
      *
      * @param item React element, eg: <img src=""/>
      * @returns {*}
