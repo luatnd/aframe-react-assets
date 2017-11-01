@@ -15,9 +15,9 @@ But when you break your very big layout into so many nested React components, yo
 
 You can skip the detail and jump to [How](#how) section if you aren't interested in the detail of problem.
 
-Another benefit is you can track the progress of assets loading if you want, see [`onLoadingByAmount()`](#onloadingbyamount) event handle:
+Another benefit is you can track the progress of assets loading if you want, see [`onLoadingByAmount()`](##onloadingbyamountassetloaded-number-assettotal-number-assetcurrentitem-objectvoid) event handle:
 
-![aframe-react-assets loading preview](src/assets/asset_loading.png "aframe-react-assets loading preview")
+![aframe-react-assets loading preview](src/assets/asset_loading.gif)
 <br/>
 
 ##### Detail of the problem
