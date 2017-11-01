@@ -11,7 +11,7 @@ Just take a look at https://github.com/luatnd/aframe-react-demo
 
 ##### TL;DR
 > `Aframe assets manager system` require you too put all your assets inside _only one_ `<a-assets>` tag in your app AND a <a-assets> must be the direct child of `<a-scene>`.
-But when you break your very big layout into so many nested React components, you need to find a way to put your assets at your components to ensure **_component oriented_** spirit of React while stay being conflict with `Aframe assets manager system`. Using `aframe-react-assets` is a good solution for you. 
+But when you break your very big layout into so many nested React components, you need to find a way to put your assets at your components to ensure **_component oriented_** spirit of React while stay out of being conflict with `Aframe assets manager system`. Using `aframe-react-assets` is a good solution for you.
 
 You can skip the detail and jump to [How](#how) section if you aren't interested in the detail of problem.
 
